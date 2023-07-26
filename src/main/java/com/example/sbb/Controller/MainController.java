@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 //Default Web url
 //=> localhost:8080/
 
@@ -22,14 +25,7 @@ public class MainController {
     return "Hello World";
   }
 
-  @GetMapping("/test")
-  @ResponseBody
-  public String showMain(){
-    return """
-           <h1>안녕하세요.</h1>
-           <input type="text" placeholder="텍스트를 입력해주세요."/>
-           """;
-  }
+  //GET, POST 방식 설명
 
   @GetMapping("/page1")
   @ResponseBody
@@ -80,5 +76,46 @@ public class MainController {
            """.formatted(name, age);
     //매개변수에 저장되는 데이터의 타입이 일치하지 않아서 에러가 발생하였다.
     //전송하는 form 데이터의 순서에 맞춰서 매개변수의 순서를 바꿨더니 에러가 해결됐다.
+  }
+
+  //구구단 출력하기
+  //데이터 입력
+  /*
+  @GetMapping("/gugudan")
+  @ResponseBody
+  public String InputGugudan(){
+    return """
+           <h3>숫자를 입력해주세요.</h3>
+           <form method="POST" action="/gugudanOutput">
+            num1 : <input type="number" name="num1" placeholder="숫자를 입력해주세요."/><br/>
+            num2 : <input type="number" name="num2" placeholder="숫자를 입력해주세요."/><br/>
+            <input type="submit" value="곱하기"/>
+           </form>
+           """;
+  }
+
+  @PostMapping("/gugudanOutput")
+  @ResponseBody
+  public int GugudanOutput(Integer num1, Integer num2){
+    return IntStream.rangeClosed(1, num2)
+            .mapToObj(i -> "%d * %d = %d".formatted(num1, num2, num1 * num2));
+  }*/
+
+  @GetMapping("/gugudan")
+  @ResponseBody
+  public String showGugudan(Integer dan, Integer limit){
+    if(dan == null){
+      dan = 9;
+    }
+    if(limit == null){
+      limit = 9;
+    }
+
+    final Integer finalDan = dan;
+    //int가 변수 형태로 선언한다면, Integer는 객체 형태로 선언한다.
+
+    return IntStream.rangeClosed(1, limit)
+            .mapToObj(i -> "%d * %d = %d".formatted(finalDan, i, finalDan * i))
+            .collect(Collectors.joining("<br/>"));
   }
 }
